@@ -5,7 +5,7 @@ export class SpriteComponent extends Component {
     static id = Component.nextId++;
 
     constructor(
-        spritePath = "./Chick.png",
+        spritePath = "../Game/Chick.png",
         xOffset = 0, yOffset = 0,
         width = 32, height = 32
         ){
@@ -20,12 +20,10 @@ export class SpriteComponent extends Component {
         this.width = width;
         this.height = height;
 
-        this.objectID = SpriteComponent.id;
         this.name = this.constructor.name;
     }
 
     getID(){
-        console.log('sprite ID: ', SpriteComponent.id);
         return SpriteComponent.id;
     }
 }

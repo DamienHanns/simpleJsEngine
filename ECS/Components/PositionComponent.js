@@ -10,7 +10,6 @@ export class PositionComponent extends Component {
         super();
         this.x = x;
         this.y = y;
-        this.objectID = PositionComponent.id;
         this.name = this.constructor.name;
     }
 

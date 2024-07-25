@@ -8,11 +8,9 @@ export class MovementComponent extends Component {
         x = 0, y = 0,
     ){
         super();
-        this.xVelocity = 7;
-        this.yVelocity = 9;
+        this.xVelocity = 2;
+        this.yVelocity = 3;
 
-
-        this.objectID = MovementComponent.id;
         this.name = this.constructor.name;
     }
 

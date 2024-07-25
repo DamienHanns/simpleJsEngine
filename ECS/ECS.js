@@ -1,9 +1,12 @@
 import {Entity} from "./Entity.js";
-import {Component} from "./Components/Component.js";
 
 export class ECS {
     constructor() {
         this.entities = [];
+        this.entitiesToAdd = [];
+        this.entitiesToRemove = [];
+        this.freedEntities = []
+
         this.allComponentPools = [];
         this.componentBitsets = new Uint32Array(1000);
 
@@ -12,8 +15,15 @@ export class ECS {
 
     /////////////////ENTITIES AND COMPONENTS////////////////////////
 
+    //todo add check of freedEntities. If there is one available recycle it.
     createEntity(name) {
+        //check freedEntityLength if not 0
+            //get the id stored there use it for the index of this.entities,
+            //if a new name has been passed in, assign the name parameter to it
+            //return the id
+
         const entity = new Entity(name);
+
         this.entities.push(entity);
         return entity;
     }
@@ -48,8 +58,6 @@ export class ECS {
         //this.checkBinaryValue(this.componentBitsets[entityID])
     }
 
-
-
     checkBinaryValue(valueToCheck){
         let binaryString = valueToCheck.toString(2);
         binaryString.padStart(32, '0');
@@ -59,19 +67,6 @@ export class ECS {
     getComponent(entity, component) {
         const componentPool = this.allComponentPools[component.id];
         return componentPool ? componentPool[entity] : undefined;
-    }
-
-    //todo DONT NEED BOTH getEntity FUNCTIONS
-    getEntitiesWithComponent(requiredComponents) {
-        const entities = [];
-
-        for (let i = 0; i < this.entities.length; i++) {
-            if ((this.componentBitsets[i] & requiredComponents) === requiredComponents) {
-                entities.push(i);
-            }
-        }
-
-        return entities;
     }
 
     getEntitiesWithComponentSet(requiredComponents) {
@@ -94,6 +89,33 @@ export class ECS {
         return (this.componentBitsets[entityID] & requiredComponentSet) === requiredComponentSet;
     }
 
+    //todo consider using a template function for entity creation
+    entityCreationQueue(creationFunction){
+        this.entitiesToAdd.push(creationFunction);
+    }
+
+    processEntityCreationQueue(){
+        while (this.entitiesToAdd.length > 0) {
+            const createEntityFunction = this.entitiesToAdd.shift();
+            createEntityFunction();
+        }
+    }
+
+    removeEntity(entityID) {
+        this.entitiesToRemove.push(entityID);
+    }
+
+    //todo test the removal process
+    //set componentSet to 0 and add the entityID to freedEntities for recycling
+    processEntityRemovals(){
+        while (this.entitiesToRemove.length > 0) {
+            const entityID = this.entitiesToRemove.shift();
+            this.componentBitsets[entityID] = 0;
+
+            this.freedEntities.push(entityID);
+        }
+    }
+
     ////////////////////SYSTEMS//////////////////////
 
     addSystem(system) {
@@ -104,7 +126,7 @@ export class ECS {
         }
 
         this.allSystems.push(system);
-        console.log("move system added");
+        console.log(system.constructor.name, " added");
     }
 
     runSystems(){

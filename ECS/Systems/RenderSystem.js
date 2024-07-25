@@ -10,8 +10,7 @@ export class RenderSystem extends System {
     }
 
     run() {
-        //todo use the bitset for BOTH position and sprite component
-        this.systemEntities = this.ecs.getEntitiesWithComponent(this.componentBitset);
+        this.systemEntities = this.ecs.getEntitiesWithComponentSet(this.componentBitset);
 
         if (this.systemEntities === undefined) { console.log('has no entities to render'); return; }
 
