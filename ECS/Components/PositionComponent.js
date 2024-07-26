@@ -1,7 +1,6 @@
 import {Component} from './Component.js';
 
 export class PositionComponent extends Component {
-    static bIdSet = false;
     static id = Component.nextId++;
 
     constructor(
@@ -10,7 +9,6 @@ export class PositionComponent extends Component {
         super();
         this.x = x;
         this.y = y;
-        this.name = this.constructor.name;
     }
 
     getID(){
