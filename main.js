@@ -8,10 +8,14 @@ import {Game} from "./Game/Game.js";
 const ecs = new ECS();
 const game = new Game(ecs);
 
+let lastTimestamp = 0;
 
-gameLoop();
+function gameLoop(timestamp) {
+  const deltaTime = (timestamp - lastTimestamp) / 1000;
+  lastTimestamp = timestamp;
 
-function gameLoop() {
-  game.run();
+  game.run(deltaTime);
   requestAnimationFrame(gameLoop);
 }
+
+requestAnimationFrame(gameLoop);

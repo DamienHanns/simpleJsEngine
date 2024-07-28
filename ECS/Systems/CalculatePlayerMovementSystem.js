@@ -9,7 +9,7 @@ export class CalculatePlayerMovementSystem extends System {
         this.componentBitset  = 1 << PlayerInputComponent.id | 1 << MovementComponent.id ;
     }
 
-    run() {
+    run(deltaTime) {
         this.systemEntities = this.ecs.getEntitiesWithComponentSet(this.componentBitset);
 
         if (this.systemEntities === undefined) { console.log('has no entities to run on'); return; }
@@ -27,8 +27,10 @@ export class CalculatePlayerMovementSystem extends System {
             inputY += playerInputComponent.up ? -1 : 0;
             inputY += playerInputComponent.down ? 1 : 0;
 
-            moveComponent.xVelocity = inputX;
-            moveComponent.yVelocity = inputY;
+            let playerMoveSpeed = moveComponent.maxMoveSpeed;
+
+            moveComponent.xVelocity = (playerMoveSpeed * inputX) * deltaTime;
+            moveComponent.yVelocity = (playerMoveSpeed * inputY) * deltaTime;
         }
     }
 }

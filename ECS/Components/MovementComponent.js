@@ -4,9 +4,11 @@ export class MovementComponent extends Component {
     static id = Component.nextId++;
 
     constructor(
-        xVelocity = 0, yVelocity = 0,
+        maxMoveSpeed = 500, xVelocity = 0, yVelocity = 0,
     ){
         super();
+        this.maxMoveSpeed = maxMoveSpeed;
+
         this.xVelocity = xVelocity;
         this.yVelocity = yVelocity;
 

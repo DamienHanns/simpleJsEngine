@@ -69,6 +69,10 @@ export class ECS {
         return componentPool ? componentPool[entity] : undefined;
     }
 
+    hasComponentSet(entityID, componentSet) {
+        return ((this.componentBitsets[entityID] & componentSet) === componentSet);
+    }
+
     getEntitiesWithComponentSet(requiredComponents) {
         const entities = [];
 
@@ -129,9 +133,9 @@ export class ECS {
         console.log(system.constructor.name, " added");
     }
 
-    runSystems(){
+    runSystems(deltaTime){
         this.allSystems.forEach(system => {
-            system.run();
+            system.run(deltaTime);
         });
     }
 }

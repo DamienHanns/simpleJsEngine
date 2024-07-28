@@ -9,7 +9,7 @@ export class ApplyMovementSystem extends System {
         this.componentBitset  = 1 << PositionComponent.id | 1 << MovementComponent.id ;
     }
 
-    run() {
+    run(maxMoveSpeed) {
         this.systemEntities = this.ecs.getEntitiesWithComponentSet(this.componentBitset);
 
         if (this.systemEntities === undefined) { console.log('has no entities to run on'); return; }
