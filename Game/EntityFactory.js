@@ -1,6 +1,6 @@
 import { SpriteComponent }   from "../ECS/Components/SpriteComponent.js";
 import { PositionComponent } from "../ECS/Components/PositionComponent.js";
-import { MovementComponent } from "../ECS/Components/MovementComponent.js";
+import { RigidbodyComponent } from "../ECS/Components/RigidbodyComponent.js";
 import { PlayerInputComponent } from "../ECS/Components/PlayerInputComponent.js";
 import { CollisionRectComponent } from "../ECS/Components/CollisionRectComponent.js";
 
@@ -15,7 +15,7 @@ export class EntityFactory {
         const entity = ecs.createEntity('hugo');
         ecs.addComponent(entity, new SpriteComponent(spritePath));
         ecs.addComponent(entity, new PositionComponent(xPos, yPos));
-        ecs.addComponent(entity, new MovementComponent(maxTopSpeed));
+        ecs.addComponent(entity, new RigidbodyComponent(false, maxTopSpeed));
         ecs.addComponent(entity, new PlayerInputComponent());
         ecs.addComponent(entity, new CollisionRectComponent());
     }
@@ -28,16 +28,7 @@ export class EntityFactory {
         const entity = ecs.createEntity('Nathaniel');
         ecs.addComponent(entity, new SpriteComponent(spritePath));
         ecs.addComponent(entity, new PositionComponent(xPos, yPos));
-        ecs.addComponent(entity, new MovementComponent(maxTopSpeed));
+        ecs.addComponent(entity, new RigidbodyComponent());
         ecs.addComponent(entity, new CollisionRectComponent());
     }
-
-    static createPetra (ecs, xPos = 260, yPos = 300, maxTopSpeed = 100, spritePath = "Game/Assets/Chick.png") {
-        const entity = ecs.createEntity('Petra');
-        ecs.addComponent(entity, new SpriteComponent(spritePath));
-        ecs.addComponent(entity, new PositionComponent(xPos, yPos));
-        ecs.addComponent(entity, new MovementComponent(maxTopSpeed));
-    }
-
-
 }

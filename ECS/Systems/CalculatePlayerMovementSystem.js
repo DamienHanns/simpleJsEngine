@@ -1,12 +1,12 @@
 import { System } from "./System.js";
 import { PlayerInputComponent } from "../Components/PlayerInputComponent.js";
-import { MovementComponent } from "../Components/MovementComponent.js";
+import { RigidbodyComponent } from "../Components/RigidbodyComponent.js";
 
 export class CalculatePlayerMovementSystem extends System {
     constructor(ecs) {
         super(ecs);
 
-        this.componentBitset  = 1 << PlayerInputComponent.id | 1 << MovementComponent.id ;
+        this.componentBitset  = 1 << PlayerInputComponent.id | 1 << RigidbodyComponent.id ;
     }
 
     run(deltaTime) {
@@ -15,7 +15,7 @@ export class CalculatePlayerMovementSystem extends System {
         if (this.systemEntities === undefined) { console.log('has no entities to run on'); return; }
 
         for (let i = 0; i < this.systemEntities.length; i++) {
-            const moveComponent = this.ecs.getComponent(this.systemEntities[i], MovementComponent);
+            const rigidbodyComponent = this.ecs.getComponent(this.systemEntities[i], RigidbodyComponent);
             const playerInputComponent = this.ecs.getComponent(this.systemEntities[i], PlayerInputComponent);
 
             //take the input and affect the movementComponent
@@ -27,10 +27,10 @@ export class CalculatePlayerMovementSystem extends System {
             inputY += playerInputComponent.up ? -1 : 0;
             inputY += playerInputComponent.down ? 1 : 0;
 
-            let playerMoveSpeed = moveComponent.maxMoveSpeed;
+            let playerMoveSpeed = rigidbodyComponent.maxMoveSpeed;
 
-            moveComponent.xVelocity = (playerMoveSpeed * inputX) * deltaTime;
-            moveComponent.yVelocity = (playerMoveSpeed * inputY) * deltaTime;
+            rigidbodyComponent.xVelocity = (playerMoveSpeed * inputX) * deltaTime;
+            rigidbodyComponent.yVelocity = (playerMoveSpeed * inputY) * deltaTime;
         }
     }
 }

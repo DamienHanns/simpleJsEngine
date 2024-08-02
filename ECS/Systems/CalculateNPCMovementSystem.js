@@ -1,12 +1,12 @@
 import { System } from "./System.js";
-import { MovementComponent } from "../Components/MovementComponent.js";
+import { RigidbodyComponent } from "../Components/RigidbodyComponent.js";
 import { PlayerInputComponent } from "../Components/PlayerInputComponent.js";
 
 export class CalculateNPCMovementSystem extends System {
     constructor(ecs) {
         super(ecs);
 
-        this.componentBitset  = 1 << MovementComponent.id ;
+        this.componentBitset  = 1 << RigidbodyComponent.id ;
         this.unwantedComponentBitset  = 1 << PlayerInputComponent.id ;
     }
 
@@ -18,10 +18,10 @@ export class CalculateNPCMovementSystem extends System {
         for (let i = 0; i < this.systemEntities.length; i++) {
             if (this.ecs.hasComponentSet(this.systemEntities[i], this.unwantedComponentBitset)) { continue;}
 
-            const moveComponent = this.ecs.getComponent(this.systemEntities[i], MovementComponent);
+            const rigidbodyComponent = this.ecs.getComponent(this.systemEntities[i], RigidbodyComponent);
 
-            moveComponent.xVelocity = (moveComponent.maxMoveSpeed) * deltaTime;
-            moveComponent.yVelocity = (moveComponent.maxMoveSpeed) * deltaTime;
+            rigidbodyComponent.xVelocity = (rigidbodyComponent.maxMoveSpeed) * deltaTime;
+            rigidbodyComponent.yVelocity = (rigidbodyComponent.maxMoveSpeed) * deltaTime;
         }
     }
 }

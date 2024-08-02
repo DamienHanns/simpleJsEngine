@@ -1,5 +1,5 @@
 import { System } from "./System.js";
-import { MovementComponent } from "../Components/MovementComponent.js";
+import { RigidbodyComponent } from "../Components/RigidbodyComponent.js";
 import { CollisionRectComponent } from "../Components/CollisionRectComponent.js";
 import { PositionComponent } from "../Components/PositionComponent.js";
 
@@ -7,7 +7,7 @@ export class CalculateCollisionSystem extends System {
     constructor(ecs) {
         super(ecs);
 
-        this.componentBitset  = 1 << MovementComponent.id | 1 << CollisionRectComponent.id | 1 << PositionComponent.id ;
+        this.componentBitset  = 1 << RigidbodyComponent.id | 1 << CollisionRectComponent.id | 1 << PositionComponent.id ;
 
     }
 
@@ -18,7 +18,7 @@ export class CalculateCollisionSystem extends System {
 
         //todo, take movment into account. At current all others need a movementComponent in order to register collisions.
         for (let i = 0; i < this.systemEntities.length; i++) {
-            const moveComponent = this.ecs.getComponent(this.systemEntities[i], MovementComponent);
+            const rigidbodyComponent = this.ecs.getComponent(this.systemEntities[i], RigidbodyComponent);
             const collisionComponent = this.ecs.getComponent(this.systemEntities[i], CollisionRectComponent);
             const positionComponent = this.ecs.getComponent(this.systemEntities[i], PositionComponent);
 
@@ -26,7 +26,7 @@ export class CalculateCollisionSystem extends System {
                 //avoid self collisions
                 if (j === i) { continue;}
 
-                const otherMoveComponent = this.ecs.getComponent(this.systemEntities[j], MovementComponent);
+                const otherRigidbodyComponent = this.ecs.getComponent(this.systemEntities[j], RigidbodyComponent);
                 const otherCollisionComponent = this.ecs.getComponent(this.systemEntities[j], CollisionRectComponent);
                 const otherPositionComponent = this.ecs.getComponent(this.systemEntities[j], PositionComponent);
 
