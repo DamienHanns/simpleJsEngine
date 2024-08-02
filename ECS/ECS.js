@@ -13,7 +13,12 @@ export class ECS {
         this.allSystems = [];
     }
 
+    //todo make the naming more consistent, esp where the bitsets are concerned
+
     /////////////////ENTITIES AND COMPONENTS////////////////////////
+
+    //when the data is needed then get the components themselves, otherwise leave them alone
+    //when testing for components use the componentBitsets
 
     //todo add check of freedEntities. If there is one available recycle it.
     createEntity(name) {

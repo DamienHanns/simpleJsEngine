@@ -4,7 +4,7 @@ export class SpriteComponent extends Component {
     static id = Component.nextId++;
 
     constructor(
-        spritePath = "../Game/Chick.png",
+        spritePath,
         xOffset = 0, yOffset = 0,
         width = 32, height = 32
         ){
@@ -13,8 +13,8 @@ export class SpriteComponent extends Component {
         this.sprite = new Image();
         this.sprite.src = spritePath;
 
-        this.xPos = xOffset;
-        this.yPos = yOffset;
+        this.xOffset = xOffset;
+        this.yOffset = yOffset;
         this.width = width;
         this.height = height;
     }

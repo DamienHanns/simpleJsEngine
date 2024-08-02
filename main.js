@@ -1,10 +1,9 @@
 import { ECS } from './ECS/ECS.js';
-import {Game} from "./Game/Game.js";
+import { Game } from "./Game/Game.js";
 
-//create ECS, 
-//todo check list for entity creation, create entities,
-//todo check for systems to load, run systems,
-//todo check for entities to remove or clear and remove them
+
+//after setting up the ECS, setup game, game will load in the first scene at the end of it constructor call
+//readying it for the game loop and game.run().
 const ecs = new ECS();
 const game = new Game(ecs);
 
