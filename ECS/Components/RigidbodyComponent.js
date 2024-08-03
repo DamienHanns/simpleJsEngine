@@ -8,7 +8,7 @@ export class RigidbodyComponent extends Component {
     ){
         super();
         this.isStatic = isStatic;
-        this.maxMoveSpeed = isStatic ? isStatic : maxMoveSpeed;
+        this.maxMoveSpeed = isStatic ? 0 : maxMoveSpeed;
 
         this.xVelocity = 0;
         this.yVelocity = 0;

@@ -3,7 +3,7 @@ import { RigidbodyComponent } from "../Components/RigidbodyComponent.js";
 import { CollisionRectComponent } from "../Components/CollisionRectComponent.js";
 import { PositionComponent } from "../Components/PositionComponent.js";
 
-export class CalculateCollisionSystem extends System {
+export class CalculateCollisionsSystem extends System {
     constructor(ecs) {
         super(ecs);
 
@@ -16,25 +16,34 @@ export class CalculateCollisionSystem extends System {
 
         if (this.systemEntities === undefined) { console.log('has no entities to run on'); return; }
 
-        //todo, take movment into account. At current all others need a movementComponent in order to register collisions.
         for (let i = 0; i < this.systemEntities.length; i++) {
-            const rigidbodyComponent = this.ecs.getComponent(this.systemEntities[i], RigidbodyComponent);
             const collisionComponent = this.ecs.getComponent(this.systemEntities[i], CollisionRectComponent);
+            if (collisionComponent.isStatic === true) { continue; }
+
+            const rigidbodyComponent = this.ecs.getComponent(this.systemEntities[i], RigidbodyComponent);
             const positionComponent = this.ecs.getComponent(this.systemEntities[i], PositionComponent);
+
+            let xPosition = positionComponent.x + rigidbodyComponent.xVelocity;
+            let yPosition = positionComponent.y + rigidbodyComponent.yVelocity;
 
             for (let j = 0; j < this.systemEntities.length; j++){
                 //avoid self collisions
                 if (j === i) { continue;}
 
-                const otherRigidbodyComponent = this.ecs.getComponent(this.systemEntities[j], RigidbodyComponent);
+               // const otherRigidbodyComponent = this.ecs.getComponent(this.systemEntities[j], RigidbodyComponent);
                 const otherCollisionComponent = this.ecs.getComponent(this.systemEntities[j], CollisionRectComponent);
                 const otherPositionComponent = this.ecs.getComponent(this.systemEntities[j], PositionComponent);
 
-                report(
-                    positionComponent.x < otherPositionComponent.x + otherCollisionComponent.width &&
-                    positionComponent.x + collisionComponent.width > otherPositionComponent.x &&
-                    positionComponent.y < otherPositionComponent.y + otherCollisionComponent.height &&
-                    positionComponent.y + collisionComponent.height > otherPositionComponent.y);
+                const hasCollided = (
+                    xPosition < otherPositionComponent.x + otherCollisionComponent.width &&
+                    xPosition + collisionComponent.width > otherPositionComponent.x &&
+                    yPosition < otherPositionComponent.y + otherCollisionComponent.height &&
+                    yPosition + collisionComponent.height > otherPositionComponent.y);
+
+                if (hasCollided) {
+                    rigidbodyComponent.xVelocity = 0;
+                    rigidbodyComponent.yVelocity = 0;
+                }
             }
         }
 

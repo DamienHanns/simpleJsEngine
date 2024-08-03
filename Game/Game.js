@@ -5,7 +5,7 @@ import { RenderSystem } from "../ECS/Systems/RenderSystem.js";
 import { InputSystem } from "../ECS/Systems/InputSystem.js";
 import { CalculatePlayerMovementSystem } from "../ECS/Systems/CalculatePlayerMovementSystem.js";
 import { CalculateNPCMovementSystem } from "../ECS/Systems/CalculateNPCMovementSystem.js";
-import { CalculateCollisionSystem } from "../ECS/Systems/CalculateCollisionSystem.js";
+import { CalculateCollisionsSystem } from "../ECS/Systems/CalculateCollisionsSystem.js";
 
 //the main gameloop to processed from game.run(). All entities are queued for creation, and systems are added, then the
 //gameloop is then executed with them.
@@ -43,7 +43,7 @@ export class Game{
         this.ecs.addSystem(new InputSystem(this.ecs));
         this.ecs.addSystem(new CalculatePlayerMovementSystem(this.ecs));
         this.ecs.addSystem(new CalculateNPCMovementSystem(this.ecs));
-        this.ecs.addSystem(new CalculateCollisionSystem(this.ecs));
+        this.ecs.addSystem(new CalculateCollisionsSystem(this.ecs));
         this.ecs.addSystem(new ApplyMovementSystem(this.ecs));
         this.ecs.addSystem(new RenderSystem(this.ecs));
 
