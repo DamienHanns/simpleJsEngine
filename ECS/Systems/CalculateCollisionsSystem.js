@@ -34,6 +34,7 @@ export class CalculateCollisionsSystem extends System {
                 const otherCollisionComponent = this.ecs.getComponent(this.systemEntities[j], CollisionRectComponent);
                 const otherPositionComponent = this.ecs.getComponent(this.systemEntities[j], PositionComponent);
 
+                //todo take collision offsets into account
                 const hasCollided = (
                     xPosition < otherPositionComponent.x + otherCollisionComponent.width &&
                     xPosition + collisionComponent.width > otherPositionComponent.x &&

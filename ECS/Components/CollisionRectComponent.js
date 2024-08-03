@@ -10,8 +10,6 @@ export class CollisionRectComponent extends Component {
 
         this.xOffset = xOffset;
         this.yOffset = yOffset;
-
-        this.collisionSprite = 'Game/Assets/CollisionSprite.png'
     }
 
     getID(){

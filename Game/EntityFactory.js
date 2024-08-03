@@ -3,6 +3,7 @@ import { PositionComponent } from "../ECS/Components/PositionComponent.js";
 import { RigidbodyComponent } from "../ECS/Components/RigidbodyComponent.js";
 import { PlayerInputComponent } from "../ECS/Components/PlayerInputComponent.js";
 import { CollisionRectComponent } from "../ECS/Components/CollisionRectComponent.js";
+import { CollisionSpriteComponent } from "../ECS/Components/CollisionSpriteComponent.js";
 
 export class EntityFactory {
 
@@ -18,6 +19,7 @@ export class EntityFactory {
         ecs.addComponent(entity, new RigidbodyComponent(false, maxTopSpeed));
         ecs.addComponent(entity, new PlayerInputComponent());
         ecs.addComponent(entity, new CollisionRectComponent());
+        ecs.addComponent(entity, new CollisionSpriteComponent(true));
     }
 
     static createNathaniel (ecs,
