@@ -10,7 +10,31 @@ export class CalculateCollisionsSystem extends System {
     constructor(ecs) {
         super(ecs);
 
+        this.newX = 0;
+        this.newY = 0;
+
+        this.buffer = 1;
+
+        this.topLeftA = { x: 0, y: 0 };
+        this.topRightA = { x: 0, y: 0 };
+        this.botLeftA = { x: 0, y: 0 };
+        this.botRightA = { x: 0, y: 0 };
+
         this.componentBitset  = 1 << RigidbodyComponent.id | 1 << CollisionRectComponent.id | 1 << PositionComponent.id ;
+    }
+
+    checkCollisionNodesHorizontal (nodePosA, entityBPos, velocity, widthB = 32, heightB = 32){
+        return (nodePosA.x + (velocity.x + this.buffer) >= entityBPos.x &&
+            nodePosA.x + (velocity.x - this.buffer) <= entityBPos.x + widthB &&
+            nodePosA.y >= entityBPos.y &&
+            nodePosA.y <= entityBPos.y + heightB);
+    }
+
+    checkCollisionNodesVertical (nodePosA, entityBPos, velocity, widthB = 32, heightB = 32){
+        return (nodePosA.x >= entityBPos.x &&
+            nodePosA.x <= entityBPos.x + widthB &&
+            nodePosA.y + ( velocity.y + this.buffer ) >= entityBPos.y &&
+            nodePosA.y  + ( velocity.y - this.buffer ) <= entityBPos.y + heightB);
     }
 
     run(deltaTime) {
@@ -29,18 +53,18 @@ export class CalculateCollisionsSystem extends System {
             const positionComponentA = this.ecs.getComponent(entityA, PositionComponent);
 
             //todo take into account offset values for both entityA and entityB
-            const newX = positionComponentA.x;
-            const newY = positionComponentA.y;
+            this.newX = positionComponentA.x;
+            this.newY = positionComponentA.y;
+
+            this.topLeftA = { x: this.newX , y: this.newY };
+            this.topRightA = { x: this.newX + collisionComponentA.width, y: this.newY };
+            this.botLeftA = { x: this.newX, y: this.newY + collisionComponentA.height };
+            this.botRightA = { x: this.newX + collisionComponentA.width, y: this.newY + collisionComponentA.height };
 
             collisionComponentA.collisions.left = false;
             collisionComponentA.collisions.right = false;
             collisionComponentA.collisions.above = false;
             collisionComponentA.collisions.below = false;
-
-            let topLeftA = { x: newX , y: newY };
-            let topRightA = { x: newX + collisionComponentA.width, y: newY };
-            let botLeftA = { x: newX, y: newY + collisionComponentA.height };
-            let botRightA = { x: newX + collisionComponentA.width, y: newY + collisionComponentA.height };
 
             for (let j = 0; j < this.systemEntities.length; j++){
                 //avoid self collisions
@@ -51,35 +75,45 @@ export class CalculateCollisionsSystem extends System {
 
                 const entityBPos = { x: positionComponentB.x , y: positionComponentB.y };
 
+                //todo check if i can slip into corners
+                const verticalDirection  = Math.sign(rigidbodyComponentA.velocity.y);
+                if (verticalDirection !== 0){
+                    if (verticalDirection > 0){
+                        if (this.checkCollisionNodesVertical(this.botRightA, entityBPos, rigidbodyComponentA.velocity))
+                        { collisionComponentA.collisions.below = true;   }
+                        if (this.checkCollisionNodesVertical (this.botLeftA, entityBPos, rigidbodyComponentA.velocity))
+                        { collisionComponentA.collisions.below = true;  }
+                    } else {
+                        if (this.checkCollisionNodesVertical (this.topLeftA, entityBPos, rigidbodyComponentA.velocity))
+                        { collisionComponentA.collisions.above = true;  }
+                        if (this.checkCollisionNodesVertical (this.topRightA, entityBPos, rigidbodyComponentA.velocity))
+                        { collisionComponentA.collisions.above = true;  }
+                    }
+                }
+
+                //update collision node positions before the horizontal checks. this is to try and prevent clipping through corners.
+                if (!collisionComponentA.collisions.below && !collisionComponentA.collisions.above){
+                    this.newY = positionComponentA.y + rigidbodyComponentA.velocity.y;
+                    this.topLeftA = { x: this.newX , y: this.newY };
+                    this.topRightA = { x: this.newX + collisionComponentA.width, y: this.newY };
+                    this.botLeftA = { x: this.newX, y: this.newY + collisionComponentA.height };
+                    this.botRightA = { x: this.newX + collisionComponentA.width, y: this.newY + collisionComponentA.height };
+                }
+
 
                 //todo collisions only check corners, consider intermediary points between the corners for differently sized objects
                 const horizontalDirection = Math.sign(rigidbodyComponentA.velocity.x);
                 if (horizontalDirection !== 0){
                     if (horizontalDirection > 0){
-                        if (checkCollisionNodesHorizontal(topRightA, entityBPos, rigidbodyComponentA.velocity))
+                        if (this.checkCollisionNodesHorizontal(this.topRightA, entityBPos, rigidbodyComponentA.velocity))
                         { collisionComponentA.collisions.right = true; }
-                        if (checkCollisionNodesHorizontal(botRightA, entityBPos, rigidbodyComponentA.velocity))
+                        if (this.checkCollisionNodesHorizontal(this.botRightA, entityBPos, rigidbodyComponentA.velocity))
                         { collisionComponentA.collisions.right = true; }
                     } else {
-                        if (checkCollisionNodesHorizontal(topLeftA, entityBPos, rigidbodyComponentA.velocity))
+                        if (this.checkCollisionNodesHorizontal(this.topLeftA, entityBPos, rigidbodyComponentA.velocity))
                         { collisionComponentA.collisions.left = true }
-                        if (checkCollisionNodesHorizontal(botLeftA, entityBPos, rigidbodyComponentA.velocity))
+                        if (this.checkCollisionNodesHorizontal(this.botLeftA, entityBPos, rigidbodyComponentA.velocity))
                         { collisionComponentA.collisions.left = true }
-                    }
-                }
-                //todo check if i can slip into corners
-                const verticalDirection  = Math.sign(rigidbodyComponentA.velocity.y);
-                if (verticalDirection !== 0){
-                    if (verticalDirection > 0){
-                        if (checkCollisionNodesVertical(botRightA, entityBPos, rigidbodyComponentA.velocity))
-                        { collisionComponentA.collisions.below = true }
-                        if (checkCollisionNodesVertical (botLeftA, entityBPos, rigidbodyComponentA.velocity))
-                        { collisionComponentA.collisions.below = true }
-                    } else {
-                        if (checkCollisionNodesVertical (topLeftA, entityBPos, rigidbodyComponentA.velocity))
-                        { collisionComponentA.collisions.above = true }
-                        if (checkCollisionNodesVertical (topRightA, entityBPos, rigidbodyComponentA.velocity))
-                        { collisionComponentA.collisions.above = true }
                     }
                 }
             }
@@ -88,18 +122,6 @@ export class CalculateCollisionsSystem extends System {
             if (collisionComponentA.collisions.right || collisionComponentA.collisions.left) { rigidbodyComponentA.velocity.x = 0; }
         }
 
-        function checkCollisionNodesHorizontal (nodePosA, entityBPos, velocity, widthB = 32, heightB = 32){
-            return (nodePosA.x + velocity.x >= entityBPos.x &&
-                nodePosA.x + velocity.x <= entityBPos.x + widthB &&
-                nodePosA.y >= entityBPos.y &&
-                nodePosA.y <= entityBPos.y + heightB);
-        }
 
-        function checkCollisionNodesVertical (nodePosA, entityBPos, velocity, widthB = 32, heightB = 32){
-            return (nodePosA.x >= entityBPos.x &&
-                nodePosA.x <= entityBPos.x + widthB &&
-                nodePosA.y + velocity.y >= entityBPos.y &&
-                nodePosA.y  + velocity.y <= entityBPos.y + heightB);
-        }
     }
 }

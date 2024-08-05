@@ -20,8 +20,8 @@ export class CalculateNPCMovementSystem extends System {
 
             const rigidbodyComponent = this.ecs.getComponent(this.systemEntities[i], RigidbodyComponent);
 
-            rigidbodyComponent.velocity.x = (rigidbodyComponent.maxMoveSpeed) * deltaTime;
-            rigidbodyComponent.velocity.y = (rigidbodyComponent.maxMoveSpeed) * deltaTime;
+            rigidbodyComponent.velocity.x = (rigidbodyComponent.maxMoveSpeed * deltaTime) * Math.sign(rigidbodyComponent.velocity.x);
+            rigidbodyComponent.velocity.y = (rigidbodyComponent.maxMoveSpeed * deltaTime) * Math.sign(rigidbodyComponent.velocity.y);
         }
     }
 }
