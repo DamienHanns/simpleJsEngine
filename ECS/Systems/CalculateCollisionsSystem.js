@@ -3,9 +3,7 @@ import { RigidbodyComponent } from "../Components/RigidbodyComponent.js";
 import { CollisionRectComponent } from "../Components/CollisionRectComponent.js";
 import { PositionComponent } from "../Components/PositionComponent.js";
 
-
 //check if collisions on moving objects will occur this frame and adjust the rigidbody velocity accordingly.
-
 export class CalculateCollisionsSystem extends System {
     constructor(ecs) {
         super(ecs);
@@ -61,6 +59,8 @@ export class CalculateCollisionsSystem extends System {
             this.botLeftA = { x: this.newX, y: this.newY + collisionComponentA.height };
             this.botRightA = { x: this.newX + collisionComponentA.width, y: this.newY + collisionComponentA.height };
 
+            const y1 = this.topLeftA.y;
+
             collisionComponentA.collisions.left = false;
             collisionComponentA.collisions.right = false;
             collisionComponentA.collisions.above = false;
@@ -92,13 +92,17 @@ export class CalculateCollisionsSystem extends System {
                 }
 
                 //update collision node positions before the horizontal checks. this is to try and prevent clipping through corners.
-                if (!collisionComponentA.collisions.below && !collisionComponentA.collisions.above){
+                if (collisionComponentA.collisions.below === false && collisionComponentA.collisions.above === false){
                     this.newY = positionComponentA.y + rigidbodyComponentA.velocity.y;
                     this.topLeftA = { x: this.newX , y: this.newY };
                     this.topRightA = { x: this.newX + collisionComponentA.width, y: this.newY };
                     this.botLeftA = { x: this.newX, y: this.newY + collisionComponentA.height };
                     this.botRightA = { x: this.newX + collisionComponentA.width, y: this.newY + collisionComponentA.height };
                 }
+
+                const y2 = this.topLeftA.y;
+
+                console.log('topY: ',(y1 === y2))
 
 
                 //todo collisions only check corners, consider intermediary points between the corners for differently sized objects
@@ -121,7 +125,5 @@ export class CalculateCollisionsSystem extends System {
             if (collisionComponentA.collisions.below || collisionComponentA.collisions.above) { rigidbodyComponentA.velocity.y = 0; }
             if (collisionComponentA.collisions.right || collisionComponentA.collisions.left) { rigidbodyComponentA.velocity.x = 0; }
         }
-
-
     }
 }
