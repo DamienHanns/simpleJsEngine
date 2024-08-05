@@ -9,7 +9,6 @@ export class SpriteComponent extends Component {
         width = 32, height = 32
         ){
         super();
-
         this.sprite = new Image();
         this.sprite.src = spritePath;
 

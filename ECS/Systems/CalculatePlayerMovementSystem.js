@@ -29,8 +29,8 @@ export class CalculatePlayerMovementSystem extends System {
 
             let playerMoveSpeed = rigidbodyComponent.maxMoveSpeed;
 
-            rigidbodyComponent.xVelocity = (playerMoveSpeed * inputX) * deltaTime;
-            rigidbodyComponent.yVelocity = (playerMoveSpeed * inputY) * deltaTime;
+            rigidbodyComponent.velocity.x = (playerMoveSpeed * inputX) * deltaTime;
+            rigidbodyComponent.velocity.y = (playerMoveSpeed * inputY) * deltaTime;
         }
     }
 }

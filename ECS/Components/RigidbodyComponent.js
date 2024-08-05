@@ -10,12 +10,12 @@ export class RigidbodyComponent extends Component {
         this.isStatic = isStatic;
         this.maxMoveSpeed = isStatic ? 0 : maxMoveSpeed;
 
-        this.xVelocity = 0;
-        this.yVelocity = 0;
+        this.velocity = {
+            x: 0,
+            y: 0,
+        }
 
         this.name = this.constructor.name;
-
-        console.log (isStatic)
     }
 
 

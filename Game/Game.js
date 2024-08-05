@@ -31,7 +31,7 @@ export class Game{
     //todo change this function to load sceneData passed into it as a parameter
     loadScene(/* sceneData */){
         ////////entity setup////////////
-        this.ecs.entityCreationQueue(() => EntityFactory.createHugo(this.ecs,100, 100, 150,"Game/Assets/Chick.png"));
+        this.ecs.entityCreationQueue(() => EntityFactory.createHugo(this.ecs,200, 100, 150,"Game/Assets/Chick.png"));
         this.ecs.entityCreationQueue(() => EntityFactory.createNathaniel(this.ecs,100,50, 0, "Game/Assets/Chick.png"));
         this.ecs.entityCreationQueue(() => EntityFactory.createNathaniel(this.ecs,100,150, 0, "Game/Assets/Chick.png"));
         this.ecs.entityCreationQueue(() => EntityFactory.createNathaniel(this.ecs,50,100, 0, "Game/Assets/Chick.png"));

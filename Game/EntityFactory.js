@@ -18,7 +18,7 @@ export class EntityFactory {
         ecs.addComponent(entity, new PositionComponent(xPos, yPos));
         ecs.addComponent(entity, new RigidbodyComponent(false, maxTopSpeed));
         ecs.addComponent(entity, new PlayerInputComponent());
-        ecs.addComponent(entity, new CollisionRectComponent());
+        ecs.addComponent(entity, new CollisionRectComponent(true));
         ecs.addComponent(entity, new CollisionSpriteComponent(true));
     }
 
@@ -32,5 +32,6 @@ export class EntityFactory {
         ecs.addComponent(entity, new PositionComponent(xPos, yPos));
         ecs.addComponent(entity, new RigidbodyComponent());
         ecs.addComponent(entity, new CollisionRectComponent());
+        ecs.addComponent(entity, new CollisionSpriteComponent(true));
     }
 }

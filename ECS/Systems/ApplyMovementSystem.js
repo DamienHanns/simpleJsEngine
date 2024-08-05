@@ -18,8 +18,8 @@ export class ApplyMovementSystem extends System {
             const rigidbodyComponent = this.ecs.getComponent(this.systemEntities[i], RigidbodyComponent);
             const position = this.ecs.getComponent(this.systemEntities[i], PositionComponent);
 
-            position.x += rigidbodyComponent.xVelocity;
-            position.y += rigidbodyComponent.yVelocity;
+            position.x += rigidbodyComponent.velocity.x;
+            position.y += rigidbodyComponent.velocity.y;
         }
     }
 }
