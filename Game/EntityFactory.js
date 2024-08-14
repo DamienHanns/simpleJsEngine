@@ -55,11 +55,11 @@ export class EntityFactory {
                             spritePath = "Game/Assets/ChickenFeed.png"
     ) {
         let entity = ecs.createEntity('ChickenFeed');
-        ecs.addComponent(entity, new SpriteComponent(spritePath, 12, 12));
-        ecs.addComponent(entity, new PositionComponent(xPos, yPos));
+        ecs.addComponent(entity, new SpriteComponent(spritePath));
+        ecs.addComponent(entity, new PositionComponent(xPos + 90, yPos));
         ecs.addComponent(entity, new RigidbodyComponent());
-        ecs.addComponent(entity, new CollisionRectComponent(16,16 ));
-        ecs.addComponent(entity, new CollisionSpriteComponent(true));
+        ecs.addComponent(entity, new CollisionRectComponent(8,8 ));
+        ecs.addComponent(entity, new CollisionSpriteComponent());
 
     }
 }
