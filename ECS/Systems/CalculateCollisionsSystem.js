@@ -3,7 +3,9 @@ import { RigidbodyComponent } from "../Components/RigidbodyComponent.js";
 import { CollisionRectComponent } from "../Components/CollisionRectComponent.js";
 import { PositionComponent } from "../Components/PositionComponent.js";
 
-//check if collisions on moving objects will occur this frame and adjust the rigidbody velocity accordingly.
+//check if moving objects will collide with other entities with CollisionRectComponent.
+//first check vertical collisions. If no collision occurs update the y value of the collision nodes,
+//then check for horizontal collision. collision checks are based on the velocity value in the rigidbody
 export class CalculateCollisionsSystem extends System {
     constructor(ecs) {
         super(ecs);
@@ -18,23 +20,27 @@ export class CalculateCollisionsSystem extends System {
         this.botLeftA = { x: 0, y: 0 };
         this.botRightA = { x: 0, y: 0 };
 
+        //todo other collision object doesnt really need a rigidbody, it would just need a collider
         this.componentBitset  = 1 << RigidbodyComponent.id | 1 << CollisionRectComponent.id | 1 << PositionComponent.id ;
     }
 
-    checkCollisionNodesHorizontal (nodePosA, entityBPos, velocity, widthB = 32, heightB = 32){
-        return (nodePosA.x + (velocity.x + this.buffer) >= entityBPos.x &&
-            nodePosA.x + (velocity.x - this.buffer) <= entityBPos.x + widthB &&
+    checkCollisionNodesHorizontal (nodePosA, entityBPos, velocityA, widthB, heightB ){
+        return (nodePosA.x + (velocityA.x + this.buffer) >= entityBPos.x &&
+            nodePosA.x + (velocityA.x - this.buffer) <= entityBPos.x + widthB &&
             nodePosA.y >= entityBPos.y &&
             nodePosA.y <= entityBPos.y + heightB);
     }
 
-    checkCollisionNodesVertical (nodePosA, entityBPos, velocity, widthB = 32, heightB = 32){
+    checkCollisionNodesVertical (nodePosA, entityBPos, velocityA, widthB, heightB ){
         return (nodePosA.x >= entityBPos.x &&
             nodePosA.x <= entityBPos.x + widthB &&
-            nodePosA.y + ( velocity.y + this.buffer ) >= entityBPos.y &&
-            nodePosA.y  + ( velocity.y - this.buffer ) <= entityBPos.y + heightB);
+            nodePosA.y + ( velocityA.y + this.buffer ) >= entityBPos.y &&
+            nodePosA.y  + ( velocityA.y - this.buffer ) <= entityBPos.y + heightB);
     }
 
+
+    //get the collision node positions of the moving object being tested, and check the positions in gamespace that the object is about to
+    //move to by adding the rigidboys velocity to it.
     run(deltaTime) {
         this.systemEntities = this.ecs.getEntitiesWithComponentSet(this.componentBitset);
 
@@ -59,8 +65,6 @@ export class CalculateCollisionsSystem extends System {
             this.botLeftA = { x: this.newX, y: this.newY + collisionComponentA.height };
             this.botRightA = { x: this.newX + collisionComponentA.width, y: this.newY + collisionComponentA.height };
 
-            const y1 = this.topLeftA.y;
-
             collisionComponentA.collisions.left = false;
             collisionComponentA.collisions.right = false;
             collisionComponentA.collisions.above = false;
@@ -72,22 +76,32 @@ export class CalculateCollisionsSystem extends System {
 
                 const entityB = this.systemEntities[j];
                 const positionComponentB = this.ecs.getComponent(entityB, PositionComponent);
-
+                const collisionComponentB = this.ecs.getComponent(entityB, CollisionRectComponent);
                 const entityBPos = { x: positionComponentB.x , y: positionComponentB.y };
 
-                //todo check if i can slip into corners
+                let bEntitiesHaveCollided = false;
+
+                //todo needs to check collision agaisnt smaller objects, 16 by 16
                 const verticalDirection  = Math.sign(rigidbodyComponentA.velocity.y);
                 if (verticalDirection !== 0){
                     if (verticalDirection > 0){
-                        if (this.checkCollisionNodesVertical(this.botRightA, entityBPos, rigidbodyComponentA.velocity))
-                        { collisionComponentA.collisions.below = true;   }
-                        if (this.checkCollisionNodesVertical (this.botLeftA, entityBPos, rigidbodyComponentA.velocity))
-                        { collisionComponentA.collisions.below = true;  }
+                        if (this.checkCollisionNodesVertical(this.botRightA, entityBPos, rigidbodyComponentA.velocity, collisionComponentB.width, collisionComponentB.height)) {
+                            collisionComponentA.collisions.below = true;
+                            bEntitiesHaveCollided = true;
+                        }
+                        if (this.checkCollisionNodesVertical (this.botLeftA, entityBPos, rigidbodyComponentA.velocity, collisionComponentB.width, collisionComponentB.height)) {
+                            collisionComponentA.collisions.below = true;
+                            bEntitiesHaveCollided = true;
+                        }
                     } else {
-                        if (this.checkCollisionNodesVertical (this.topLeftA, entityBPos, rigidbodyComponentA.velocity))
-                        { collisionComponentA.collisions.above = true;  }
-                        if (this.checkCollisionNodesVertical (this.topRightA, entityBPos, rigidbodyComponentA.velocity))
-                        { collisionComponentA.collisions.above = true;  }
+                        if (this.checkCollisionNodesVertical (this.topLeftA, entityBPos, rigidbodyComponentA.velocity, collisionComponentB.width, collisionComponentB.height)) {
+                            collisionComponentA.collisions.above = true;
+                            bEntitiesHaveCollided = true;
+                        }
+                        if (this.checkCollisionNodesVertical (this.topRightA, entityBPos, rigidbodyComponentA.velocity, collisionComponentB.width, collisionComponentB.height)) {
+                            collisionComponentA.collisions.above = true;
+                            bEntitiesHaveCollided = true;
+                        }
                     }
                 }
 
@@ -100,28 +114,38 @@ export class CalculateCollisionsSystem extends System {
                     this.botRightA = { x: this.newX + collisionComponentA.width, y: this.newY + collisionComponentA.height };
                 }
 
-                const y2 = this.topLeftA.y;
-
-                console.log('topY: ',(y1 === y2))
-
-
                 //todo collisions only check corners, consider intermediary points between the corners for differently sized objects
                 const horizontalDirection = Math.sign(rigidbodyComponentA.velocity.x);
                 if (horizontalDirection !== 0){
                     if (horizontalDirection > 0){
-                        if (this.checkCollisionNodesHorizontal(this.topRightA, entityBPos, rigidbodyComponentA.velocity))
-                        { collisionComponentA.collisions.right = true; }
-                        if (this.checkCollisionNodesHorizontal(this.botRightA, entityBPos, rigidbodyComponentA.velocity))
-                        { collisionComponentA.collisions.right = true; }
+                        if (this.checkCollisionNodesHorizontal(this.topRightA, entityBPos, rigidbodyComponentA.velocity, collisionComponentB.width, collisionComponentB.height)) {
+                            collisionComponentA.collisions.right = true;
+                            bEntitiesHaveCollided = true;
+                        }
+                        if (this.checkCollisionNodesHorizontal(this.botRightA, entityBPos, rigidbodyComponentA.velocity, collisionComponentB.width, collisionComponentB.height)) {
+                            collisionComponentA.collisions.right = true;
+                            bEntitiesHaveCollided = true;
+                        }
                     } else {
-                        if (this.checkCollisionNodesHorizontal(this.topLeftA, entityBPos, rigidbodyComponentA.velocity))
-                        { collisionComponentA.collisions.left = true }
-                        if (this.checkCollisionNodesHorizontal(this.botLeftA, entityBPos, rigidbodyComponentA.velocity))
-                        { collisionComponentA.collisions.left = true }
+                        if (this.checkCollisionNodesHorizontal(this.topLeftA, entityBPos, rigidbodyComponentA.velocity, collisionComponentB.width, collisionComponentB.height)) {
+                            collisionComponentA.collisions.left = true;
+                            bEntitiesHaveCollided = true;
+                        }
+                        if (this.checkCollisionNodesHorizontal(this.botLeftA, entityBPos, rigidbodyComponentA.velocity, collisionComponentB.width, collisionComponentB.height)) {
+                            collisionComponentA.collisions.left = true;
+                            bEntitiesHaveCollided = true;
+                        }
                     }
                 }
+
+                //add to entities collided with
+                collisionComponentA.entitiesCollidedWith.push(this.systemEntities[j]);
             }
 
+
+
+            //todo collect info on entities being collided with.
+            //todo move the velocity change to another system that would be un after this.
             if (collisionComponentA.collisions.below || collisionComponentA.collisions.above) { rigidbodyComponentA.velocity.y = 0; }
             if (collisionComponentA.collisions.right || collisionComponentA.collisions.left) { rigidbodyComponentA.velocity.x = 0; }
         }

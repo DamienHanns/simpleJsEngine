@@ -31,12 +31,36 @@ export class Game{
     //todo change this function to load sceneData passed into it as a parameter
     loadScene(/* sceneData */){
         ////////entity setup////////////
-        this.ecs.entityCreationQueue(() => EntityFactory.createHugo(this.ecs,100 + 32, 100 + 32, 150,"Game/Assets/Chick.png"));
+        this.ecs.entityCreationQueue(() => EntityFactory.createHugo(this.ecs,100 + 32, 100 + 32, 73));
         //this.ecs.entityCreationQueue(() => EntityFactory.createNathaniel(this.ecs,100,50, 0, "Game/Assets/Chick.png"));
-        this.ecs.entityCreationQueue(() => EntityFactory.createNathaniel(this.ecs,100,100, 0, "Game/Assets/Chick.png"));
-       // this.ecs.entityCreationQueue(() => EntityFactory.createNathaniel(this.ecs,50,100, 0, "Game/Assets/Chick.png"));
-     //   this.ecs.entityCreationQueue(() => EntityFactory.createNathaniel(this.ecs,150,100, 0, "Game/Assets/Chick.png"));
+       // this.ecs.entityCreationQueue(() => EntityFactory.createNathaniel(this.ecs,100,100, 0));
+        this.ecs.entityCreationQueue(() => EntityFactory.createChickenFeed(this.ecs,80,100, 0));
 
+        const gapSize = 32;
+        const height = 15;
+        const width = 25
+        //create walls
+        for (let i = 0; i < height; i++) {
+            const yPos = gapSize * i;
+
+            for (let j = 0; j < width; j++) {
+                const xPos = gapSize * j;
+
+                if (i === 0 || i === height - 1){
+                    this.ecs.entityCreationQueue(() => EntityFactory.createWallBlock(
+                        this.ecs,xPos,yPos, 0, ));
+                } else {
+                    if (j === 0 || j === width - 1){
+                        this.ecs.entityCreationQueue(() => EntityFactory.createWallBlock(
+                            this.ecs,xPos,yPos, 0, ));
+                    }
+                }
+
+
+            }
+
+
+        }
 
 
 

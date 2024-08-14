@@ -20,6 +20,7 @@ export class CalculateNPCMovementSystem extends System {
 
             const rigidbodyComponent = this.ecs.getComponent(this.systemEntities[i], RigidbodyComponent);
 
+            //todo redo how velocity is calculated when basic ai logic  is worked on
             rigidbodyComponent.velocity.x = (rigidbodyComponent.maxMoveSpeed * deltaTime) * Math.sign(rigidbodyComponent.velocity.x);
             rigidbodyComponent.velocity.y = (rigidbodyComponent.maxMoveSpeed * deltaTime) * Math.sign(rigidbodyComponent.velocity.y);
         }

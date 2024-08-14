@@ -9,6 +9,7 @@ export class CalculatePlayerMovementSystem extends System {
         this.componentBitset  = 1 << PlayerInputComponent.id | 1 << RigidbodyComponent.id ;
     }
 
+    //check for player input and calucute movement accordingly.
     run(deltaTime) {
         this.systemEntities = this.ecs.getEntitiesWithComponentSet(this.componentBitset);
 
@@ -27,6 +28,7 @@ export class CalculatePlayerMovementSystem extends System {
             inputY += playerInputComponent.up ? -1 : 0;
             inputY += playerInputComponent.down ? 1 : 0;
 
+            //todo normalize player move speed
             let playerMoveSpeed = rigidbodyComponent.maxMoveSpeed;
 
             rigidbodyComponent.velocity.x = (playerMoveSpeed * inputX) * deltaTime;

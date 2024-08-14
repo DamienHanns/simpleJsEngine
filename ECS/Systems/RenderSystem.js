@@ -25,7 +25,7 @@ export class RenderSystem extends System {
             const spriteComponent = this.ecs.getComponent(this.systemEntities[i], SpriteComponent);
             const positionComponent = this.ecs.getComponent(this.systemEntities[i], PositionComponent);
 
-            context.drawImage(spriteComponent.sprite, positionComponent.x, positionComponent.y);
+            context.drawImage(spriteComponent.sprite, positionComponent.x + spriteComponent.xOffset, positionComponent.y + spriteComponent.yOffset);
         }
     }
 }
