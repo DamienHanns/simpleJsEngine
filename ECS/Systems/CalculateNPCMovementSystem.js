@@ -20,8 +20,6 @@ export class CalculateNPCMovementSystem extends System {
 
             const rigidbodyComponent = this.ecs.getComponent(this.systemEntities[i], RigidbodyComponent);
 
-            //todo redo how velocity is calculated when basic ai logic  is worked on
-
             if (Math.sign (rigidbodyComponent.velocity.x) !== 0){
                 rigidbodyComponent.velocity.x = (rigidbodyComponent.maxMoveSpeed * Math.sign (rigidbodyComponent.velocity.x)) * deltaTime ;
             }
@@ -29,8 +27,6 @@ export class CalculateNPCMovementSystem extends System {
             if ( Math.sign (rigidbodyComponent.velocity.y) !== 0){
                 rigidbodyComponent.velocity.y = (rigidbodyComponent.maxMoveSpeed * Math.sign (rigidbodyComponent.velocity.y)) * deltaTime;
             }
-
-            if (i === 1 ) console.log (rigidbodyComponent.velocity.x,'   ' , rigidbodyComponent.maxMoveSpeed);
         }
     }
 }

@@ -112,9 +112,9 @@ export class CalculateCollisionsSystem extends System {
                 const collisionComponentB = this.ecs.getComponent(entityB, CollisionRectComponent);
                 const entityBPos = { x: positionComponentB.x , y: positionComponentB.y };
 
-                let bEntitiesHaveCollided = false;
 
                 //////////////////VERTICAL COLLISIONS///////////////
+                //if there are no vertical collisions update the y on positionComponent
                 const verticalDirection  = Math.sign(rigidbodyComponentA.velocity.y);
                 if (verticalDirection !== 0){
                     if (verticalDirection > 0){
@@ -126,23 +126,20 @@ export class CalculateCollisionsSystem extends System {
                             collisionComponentB.width, collisionComponentB.height
                         )) {
                             collisionComponentA.collisions.below = true;
-                            bEntitiesHaveCollided = true;
 
                             this.addToCollisionsArray(collisionComponentA.entitiesCollidedWith, entityB);
                         }
-                    } else {
-                        if (this.checkCollisionNodesVertical (
+                    }
+                    else if (this.checkCollisionNodesVertical (
                             this.topLeftA, entityBPos,
                             rigidbodyComponentA.velocity,
                             collisionComponentA.width, collisionComponentA.height,
                             collisionComponentB.width, collisionComponentB.height
                         )) {
                             collisionComponentA.collisions.above = true;
-                            bEntitiesHaveCollided = true;
 
                             this.addToCollisionsArray(collisionComponentA.entitiesCollidedWith, entityB);
                         }
-                    }
                 }
 
                 //update collision node positions before the horizontal checks.
@@ -157,6 +154,7 @@ export class CalculateCollisionsSystem extends System {
 
 
                 //////////////////HORIZONTAL COLLISIONS///////////////
+                //if there are no horizontal collisions update the x on positionComponent
                 const horizontalDirection = Math.sign(rigidbodyComponentA.velocity.x);
                 if (horizontalDirection !== 0){
                     if (horizontalDirection > 0){
@@ -168,12 +166,11 @@ export class CalculateCollisionsSystem extends System {
                             collisionComponentB.width, collisionComponentB.height
                         )) {
                             collisionComponentA.collisions.right = true;
-                            bEntitiesHaveCollided = true;
 
                             this.addToCollisionsArray(collisionComponentA.entitiesCollidedWith, entityB);
                         }
-                    } else {
-                        if (this.checkCollisionNodesHorizontal(
+                    }
+                    else if (this.checkCollisionNodesHorizontal(
                             this.topLeftA,
                             entityBPos,
                             rigidbodyComponentA.velocity,
@@ -181,16 +178,25 @@ export class CalculateCollisionsSystem extends System {
                             collisionComponentB.width, collisionComponentB.height
                         )) {
                             collisionComponentA.collisions.left = true;
-                            bEntitiesHaveCollided = true;
 
                             this.addToCollisionsArray(collisionComponentA.entitiesCollidedWith, entityB);
                         }
-                    }
                 }
             }
 
-          //  if (collisionComponentA.collisions.below || collisionComponentA.collisions.above) { rigidbodyComponentA.velocity.y = 0; }
-          //  if (collisionComponentA.collisions.right || collisionComponentA.collisions.left) { rigidbodyComponentA.velocity.x = 0; }
+            if (! collisionComponentA.collisions.below && ! collisionComponentA.collisions.above) {
+                positionComponentA.y += rigidbodyComponentA.velocity.y;
+            } else {
+
+                console.log('colliding!!!');
+            }
+
+            if (! collisionComponentA.collisions.right && ! collisionComponentA.collisions.left) {
+                positionComponentA.x += rigidbodyComponentA.velocity.x;
+            }else {
+
+                console.log('colliding!!!');
+            }
         }
     }
 }

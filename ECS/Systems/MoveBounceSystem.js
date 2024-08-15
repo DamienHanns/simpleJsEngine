@@ -27,7 +27,6 @@ export class MoveBounceSystemSystem extends System {
             if (collisionComponent.bisColliding()){
                 if (Math.sign(rigidbodyComponent.velocity.x) !== 0) {
                     rigidbodyComponent.velocity.x *= -1;
-                   // rigidbodyComponent.maxMoveSpeed = 0;
                 } else if (Math.sign(rigidbodyComponent.velocity.y) !== 0) {
                     rigidbodyComponent.velocity.y *= -1;
                 }

@@ -31,7 +31,7 @@ export class EntityFactory {
         let entity = ecs.createEntity('Nathaniel');
         ecs.addComponent(entity, new SpriteComponent(spritePath));
         ecs.addComponent(entity, new PositionComponent(xPos, yPos));
-        ecs.addComponent(entity, new RigidbodyComponent(false, maxTopSpeed, 1));
+        ecs.addComponent(entity, new RigidbodyComponent(false, maxTopSpeed, 0, 1));
         ecs.addComponent(entity, new CollisionRectComponent(32,32));
         ecs.addComponent(entity, new CollisionSpriteComponent());
     }

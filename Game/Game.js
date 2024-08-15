@@ -34,7 +34,7 @@ export class Game{
     loadScene(/* sceneData */){
         ////////entity setup////////////
         this.ecs.entityCreationQueue(() => EntityFactory.createHugo(this.ecs,100 + 100, 100 + 32, 200));
-        //this.ecs.entityCreationQueue(() => EntityFactory.createNathaniel(this.ecs,100,50, 0, "Game/Assets/Chick.png"));
+        this.ecs.entityCreationQueue(() => EntityFactory.createNathaniel(this.ecs,100,50, 0, "Game/Assets/Chick.png"));
         this.ecs.entityCreationQueue(() => EntityFactory.createNathaniel(this.ecs,100,100));
        // this.ecs.entityCreationQueue(() => EntityFactory.createChickenFeed(this.ecs,80,100, 0));
 
@@ -68,14 +68,17 @@ export class Game{
         this.ecs.addSystem(new InputSystem(this.ecs));
         this.ecs.addSystem(new CalculatePlayerMovementSystem(this.ecs));
         this.ecs.addSystem(new CalculateNPCMovementSystem(this.ecs));
+
         this.ecs.addSystem(new CalculateCollisionsSystem(this.ecs));
 
         this.ecs.addSystem(new MoveBounceSystemSystem(this.ecs));
 
-        this.ecs.addSystem(new ApplyMovementSystem(this.ecs));
+        //this.ecs.addSystem(new ApplyMovementSystem(this.ecs));
 
         this.ecs.addSystem(new RenderSystem(this.ecs));
         this.ecs.addSystem(new RenderCollisionAreaSystem(this.ecs));
+
+
 
 
     }
