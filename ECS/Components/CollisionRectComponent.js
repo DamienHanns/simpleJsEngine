@@ -19,6 +19,10 @@ export class CollisionRectComponent extends Component {
         this.entitiesCollidedWith = []
     }
 
+    bisColliding(){
+        return this.entitiesCollidedWith.length > 0;
+    }
+
     getID(){
         return CollisionRectComponent.id;
     }

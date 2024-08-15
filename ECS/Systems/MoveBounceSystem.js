@@ -1,13 +1,15 @@
 import { System } from "./System.js";
 import { RigidbodyComponent } from "../Components/RigidbodyComponent.js";
 import { PlayerInputComponent } from "../Components/PlayerInputComponent.js";
+import { CollisionRectComponent } from "../Components/CollisionRectComponent.js";
 
-export class CalculateNPCMovementSystem extends System {
+export class MoveBounceSystemSystem extends System {
     constructor(ecs) {
         super(ecs);
 
-        this.componentBitset  = 1 << RigidbodyComponent.id ;
+        this.componentBitset  = 1 << RigidbodyComponent.id | 1 << CollisionRectComponent.id;
         this.unwantedComponentBitset  = 1 << PlayerInputComponent.id ;
+
     }
 
     run(deltaTime) {
@@ -19,18 +21,17 @@ export class CalculateNPCMovementSystem extends System {
             if (this.ecs.hasComponentSet(this.systemEntities[i], this.unwantedComponentBitset)) { continue;}
 
             const rigidbodyComponent = this.ecs.getComponent(this.systemEntities[i], RigidbodyComponent);
+            const collisionComponent = this.ecs.getComponent(this.systemEntities[i], CollisionRectComponent);
 
-            //todo redo how velocity is calculated when basic ai logic  is worked on
-
-            if (Math.sign (rigidbodyComponent.velocity.x) !== 0){
-                rigidbodyComponent.velocity.x = (rigidbodyComponent.maxMoveSpeed * Math.sign (rigidbodyComponent.velocity.x)) * deltaTime ;
+            //if collision is detected go in the opposite direction
+            if (collisionComponent.bisColliding()){
+                if (Math.sign(rigidbodyComponent.velocity.x) !== 0) {
+                    rigidbodyComponent.velocity.x *= -1;
+                   // rigidbodyComponent.maxMoveSpeed = 0;
+                } else if (Math.sign(rigidbodyComponent.velocity.y) !== 0) {
+                    rigidbodyComponent.velocity.y *= -1;
+                }
             }
-
-            if ( Math.sign (rigidbodyComponent.velocity.y) !== 0){
-                rigidbodyComponent.velocity.y = (rigidbodyComponent.maxMoveSpeed * Math.sign (rigidbodyComponent.velocity.y)) * deltaTime;
-            }
-
-            if (i === 1 ) console.log (rigidbodyComponent.velocity.x,'   ' , rigidbodyComponent.maxMoveSpeed);
         }
     }
 }

@@ -33,11 +33,10 @@ export class ECS {
         return entity;
     }
 
-    getEntity(id) {
-        return this.entities[id];
-    }
+    getEntity(id) { return this.entities[id]; }
 
     getAllEntities () { return this.entities; };
+
     getAllComponents(){ return this.allComponentPools; };
 
     addComponent(entity, component) {
@@ -81,6 +80,7 @@ export class ECS {
     getEntitiesWithComponentSet(requiredComponents) {
         const entities = [];
 
+        // i in the for loop has the same value as the corrisponding entity ids.
         for (let i = 0; i < this.entities.length; i++) {
             if ((this.componentBitsets[i] & requiredComponents) === requiredComponents) {
                 entities.push(i);
