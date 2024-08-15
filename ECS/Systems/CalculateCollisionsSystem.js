@@ -66,6 +66,12 @@ export class CalculateCollisionsSystem extends System {
         return collisionDetected;
     }
 
+    addToCollisionsArray(collisionArray, entityB){
+        if (!collisionArray.includes(entityB)) {
+            collisionArray.push(entityB);
+        }
+    }
+
     //get the collision node positions of the moving object being tested, and check the positions in gamespace that the object is about to
     //move to by adding the rigidbodys velocity to it.
     run(deltaTime) {
@@ -122,7 +128,7 @@ export class CalculateCollisionsSystem extends System {
                             collisionComponentA.collisions.below = true;
                             bEntitiesHaveCollided = true;
 
-                            collisionComponentA.entitiesCollidedWith.push(this.systemEntities[j]);
+                            this.addToCollisionsArray(collisionComponentA.entitiesCollidedWith, entityB);
                         }
                     } else {
                         if (this.checkCollisionNodesVertical (
@@ -134,7 +140,7 @@ export class CalculateCollisionsSystem extends System {
                             collisionComponentA.collisions.above = true;
                             bEntitiesHaveCollided = true;
 
-                            collisionComponentA.entitiesCollidedWith.push(this.systemEntities[j]);
+                            this.addToCollisionsArray(collisionComponentA.entitiesCollidedWith, entityB);
                         }
                     }
                 }
@@ -164,7 +170,7 @@ export class CalculateCollisionsSystem extends System {
                             collisionComponentA.collisions.right = true;
                             bEntitiesHaveCollided = true;
 
-                            collisionComponentA.entitiesCollidedWith.push(this.systemEntities[j]);
+                            this.addToCollisionsArray(collisionComponentA.entitiesCollidedWith, entityB);
                         }
                     } else {
                         if (this.checkCollisionNodesHorizontal(
@@ -177,14 +183,12 @@ export class CalculateCollisionsSystem extends System {
                             collisionComponentA.collisions.left = true;
                             bEntitiesHaveCollided = true;
 
-                            collisionComponentA.entitiesCollidedWith.push(this.systemEntities[j]);
+                            this.addToCollisionsArray(collisionComponentA.entitiesCollidedWith, entityB);
                         }
                     }
                 }
             }
 
-            //todo collect info on entities being collided with.
-            //todo move the velocity change to another system that would be un after this.
           //  if (collisionComponentA.collisions.below || collisionComponentA.collisions.above) { rigidbodyComponentA.velocity.y = 0; }
           //  if (collisionComponentA.collisions.right || collisionComponentA.collisions.left) { rigidbodyComponentA.velocity.x = 0; }
         }
