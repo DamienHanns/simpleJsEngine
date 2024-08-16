@@ -73,10 +73,6 @@ export class ECS {
         return componentPool ? componentPool[entity] : undefined;
     }
 
-    hasComponentSet(entityID, componentSet) {
-        return ((this.componentBitsets[entityID] & componentSet) === componentSet);
-    }
-
     getEntitiesWithComponentSet(requiredComponents) {
         const entities = [];
 

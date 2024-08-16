@@ -4,7 +4,8 @@ import { RigidbodyComponent } from "../ECS/Components/RigidbodyComponent.js";
 import { PlayerInputComponent } from "../ECS/Components/PlayerInputComponent.js";
 import { CollisionRectComponent } from "../ECS/Components/CollisionRectComponent.js";
 import { CollisionSpriteComponent } from "../ECS/Components/CollisionSpriteComponent.js";
-import { ChickenFeedComponent } from "../ECS/Components/ChickenFeedComponent.js";
+import { MoveBounceComponent } from "../ECS/Components/MoveBounceComponent.js";
+import { PickUpComponent } from "../ECS/Components/PickUpComponent.js";
 
 export class EntityFactory {
 
@@ -34,6 +35,7 @@ export class EntityFactory {
         ecs.addComponent(entity, new RigidbodyComponent(false, maxTopSpeed, 0, 1));
         ecs.addComponent(entity, new CollisionRectComponent(32,32));
         ecs.addComponent(entity, new CollisionSpriteComponent());
+        ecs.addComponent(entity, new MoveBounceComponent());
     }
 
     static createWallBlock (ecs,
@@ -61,7 +63,7 @@ export class EntityFactory {
         ecs.addComponent(entity, new RigidbodyComponent());
         ecs.addComponent(entity, new CollisionRectComponent(10,10 ));
         ecs.addComponent(entity, new CollisionSpriteComponent());
-        ecs.addComponent(entity, new ChickenFeedComponent());
+        ecs.addComponent(entity, new PickUpComponent());
 
     }
 }

@@ -184,18 +184,12 @@ export class CalculateCollisionsSystem extends System {
                 }
             }
 
-            if (! collisionComponentA.collisions.below && ! collisionComponentA.collisions.above) {
+            if ( ! collisionComponentA.collisions.below && ! collisionComponentA.collisions.above) {
                 positionComponentA.y += rigidbodyComponentA.velocity.y;
-            } else {
+            } 
 
-                console.log('colliding!!!');
-            }
-
-            if (! collisionComponentA.collisions.right && ! collisionComponentA.collisions.left) {
+            if ( ! collisionComponentA.collisions.right && ! collisionComponentA.collisions.left) {
                 positionComponentA.x += rigidbodyComponentA.velocity.x;
-            }else {
-
-                console.log('colliding!!!');
             }
         }
     }

@@ -9,6 +9,8 @@ import { CalculateCollisionsSystem } from "../ECS/Systems/CalculateCollisionsSys
 import { RenderCollisionAreaSystem } from "../ECS/Systems/RenderCollisionAreaSystem.js";
 import { MoveBounceSystemSystem } from "../ECS/Systems/MoveBounceSystem.js";
 import { ResetCollisionsSystem } from "../ECS/Systems/ResetCollisionsSystem.js";
+import {PickUpComponent} from "../ECS/Components/PickUpComponent.js";
+import {PlayerPickUpSystem} from "../ECS/Systems/PlayerPickUpSystem.js";
 
 //the main gameloop to processed from game.run(). All entities are queued for creation, and systems are added, then the
 //gameloop is then executed with them.
@@ -36,7 +38,7 @@ export class Game{
         this.ecs.entityCreationQueue(() => EntityFactory.createHugo(this.ecs,100 + 100, 100 + 32, 200));
         this.ecs.entityCreationQueue(() => EntityFactory.createNathaniel(this.ecs,100,50, 0, "Game/Assets/Chick.png"));
         this.ecs.entityCreationQueue(() => EntityFactory.createNathaniel(this.ecs,100,100));
-       // this.ecs.entityCreationQueue(() => EntityFactory.createChickenFeed(this.ecs,80,100, 0));
+        this.ecs.entityCreationQueue(() => EntityFactory.createChickenFeed(this.ecs,80,100, 0));
 
         const gapSize = 32;
         const height = 15;
@@ -66,20 +68,17 @@ export class Game{
         this.ecs.addSystem(new ResetCollisionsSystem(this.ecs));
 
         this.ecs.addSystem(new InputSystem(this.ecs));
+
         this.ecs.addSystem(new CalculatePlayerMovementSystem(this.ecs));
         this.ecs.addSystem(new CalculateNPCMovementSystem(this.ecs));
-
         this.ecs.addSystem(new CalculateCollisionsSystem(this.ecs));
 
+        this.ecs.addSystem(new PlayerPickUpSystem(this.ecs));
         this.ecs.addSystem(new MoveBounceSystemSystem(this.ecs));
 
-        //this.ecs.addSystem(new ApplyMovementSystem(this.ecs));
 
         this.ecs.addSystem(new RenderSystem(this.ecs));
         this.ecs.addSystem(new RenderCollisionAreaSystem(this.ecs));
-
-
-
 
     }
 }

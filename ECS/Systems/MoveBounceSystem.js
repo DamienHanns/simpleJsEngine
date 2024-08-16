@@ -2,12 +2,13 @@ import { System } from "./System.js";
 import { RigidbodyComponent } from "../Components/RigidbodyComponent.js";
 import { PlayerInputComponent } from "../Components/PlayerInputComponent.js";
 import { CollisionRectComponent } from "../Components/CollisionRectComponent.js";
+import { MoveBounceComponent } from "../Components/MoveBounceComponent.js";
 
 export class MoveBounceSystemSystem extends System {
     constructor(ecs) {
         super(ecs);
 
-        this.componentBitset  = 1 << RigidbodyComponent.id | 1 << CollisionRectComponent.id;
+        this.componentBitset  = 1 << RigidbodyComponent.id | 1 << CollisionRectComponent.id | 1 << MoveBounceComponent.id;
         this.unwantedComponentBitset  = 1 << PlayerInputComponent.id ;
 
     }
@@ -18,7 +19,7 @@ export class MoveBounceSystemSystem extends System {
         if (this.systemEntities === undefined) { console.log('has no entities to run on'); return; }
 
         for (let i = 0; i < this.systemEntities.length; i++) {
-            if (this.ecs.hasComponentSet(this.systemEntities[i], this.unwantedComponentBitset)) { continue;}
+            if (this.ecs.hasComponents(this.systemEntities[i], this.unwantedComponentBitset)) { continue;}
 
             const rigidbodyComponent = this.ecs.getComponent(this.systemEntities[i], RigidbodyComponent);
             const collisionComponent = this.ecs.getComponent(this.systemEntities[i], CollisionRectComponent);

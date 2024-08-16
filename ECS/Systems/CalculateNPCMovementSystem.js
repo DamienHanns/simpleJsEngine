@@ -16,7 +16,7 @@ export class CalculateNPCMovementSystem extends System {
         if (this.systemEntities === undefined) { console.log('has no entities to run on'); return; }
 
         for (let i = 0; i < this.systemEntities.length; i++) {
-            if (this.ecs.hasComponentSet(this.systemEntities[i], this.unwantedComponentBitset)) { continue;}
+            if (this.ecs.hasComponents(this.systemEntities[i], this.unwantedComponentBitset)) { continue;}
 
             const rigidbodyComponent = this.ecs.getComponent(this.systemEntities[i], RigidbodyComponent);
 

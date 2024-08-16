@@ -1,6 +1,6 @@
 import { Component } from './Component.js';
 
-export class ChickenFeedComponent extends Component {
+export class MoveBounceComponent extends Component {
     static id = Component.nextId++;
 
     constructor(){
@@ -8,6 +8,6 @@ export class ChickenFeedComponent extends Component {
     }
 
     getID(){
-        return ChickenFeedComponent.id;
+        return MoveBounceComponent.id;
     }
 }
