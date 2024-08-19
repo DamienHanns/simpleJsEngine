@@ -28,7 +28,7 @@ export class Game{
     run(deltaTime)   {
         this.ecs.processEntityCreationQueue();
         this.ecs.runSystems(deltaTime);
-        //ecs.removeEntities();
+        this.ecs.processEntityRemovals();
     }
 
     //todo create a sceneData object
@@ -39,7 +39,11 @@ export class Game{
         this.ecs.entityCreationQueue(() => EntityFactory.createNathaniel(this.ecs,100,50, 0, "Game/Assets/Chick.png"));
         this.ecs.entityCreationQueue(() => EntityFactory.createNathaniel(this.ecs,100,100));
         this.ecs.entityCreationQueue(() => EntityFactory.createChickenFeed(this.ecs,80,100, 0));
-
+        this.ecs.entityCreationQueue(() => EntityFactory.createChickenFeed(this.ecs,80,120, 0));
+        this.ecs.entityCreationQueue(() => EntityFactory.createChickenFeed(this.ecs,80,140, 0));
+        this.ecs.entityCreationQueue(() => EntityFactory.createChickenFeed(this.ecs,80,160, 0));
+        this.ecs.entityCreationQueue(() => EntityFactory.createChickenFeed(this.ecs,80,180, 0));
+        this.ecs.entityCreationQueue(() => EntityFactory.createChickenFeed(this.ecs,80,200, 0));
         const gapSize = 32;
         const height = 15;
         const width = 25

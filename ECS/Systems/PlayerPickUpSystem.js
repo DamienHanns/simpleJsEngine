@@ -1,7 +1,8 @@
 import { System } from "./System.js";
 import { CollisionRectComponent } from "../Components/CollisionRectComponent.js";
 import { PlayerInputComponent } from "../Components/PlayerInputComponent.js";
-import {PickUpComponent} from "../Components/PickUpComponent.js";
+import { PickUpComponent } from "../Components/PickUpComponent.js";
+import { RigidbodyComponent } from "../Components/RigidbodyComponent.js";
 
 export class PlayerPickUpSystem extends System {
     constructor(ecs) {
@@ -11,7 +12,8 @@ export class PlayerPickUpSystem extends System {
         this.pickUpComponent = 1 << PickUpComponent.id;
     }
 
-    //check for player input and calucute movement accordingly.
+    //check collisionComponent.entitiesCollidedWith on player for pickUpComponents.
+    // If found, process the pickups and remove the pick entity
     run(deltaTime) {
         this.systemEntities = this.ecs.getEntitiesWithComponentSet(this.componentBitset);
 
@@ -23,7 +25,17 @@ export class PlayerPickUpSystem extends System {
             if (collisionComponent.bisColliding()) {
              for (let i = 0; i < collisionComponent.entitiesCollidedWith.length; i++) {
                     if (this.ecs.hasComponents(collisionComponent.entitiesCollidedWith[i], this.pickUpComponent)){
-                        console.log('report pickup collision');
+                        const pickUp = this.ecs.getComponent(collisionComponent.entitiesCollidedWith[i], PickUpComponent);
+
+                        if (pickUp.type === 'speed'){
+                            const rigidbodyComponent = this.ecs.getComponent(this.systemEntities[i], RigidbodyComponent);
+                            if (rigidbodyComponent !== undefined){
+                                rigidbodyComponent.maxMoveSpeed += pickUp.value;
+
+                            }
+                        }
+
+                        this.ecs.removeEntity(collisionComponent.entitiesCollidedWith[i]);
                     }
                 }
             }

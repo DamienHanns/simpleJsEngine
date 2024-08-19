@@ -110,7 +110,6 @@ export class ECS {
         this.entitiesToRemove.push(entityID);
     }
 
-    //todo test the removal process
     //set componentSet to 0 and add the entityID to freedEntities for recycling
     processEntityRemovals(){
         while (this.entitiesToRemove.length > 0) {

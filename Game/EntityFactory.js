@@ -12,7 +12,7 @@ export class EntityFactory {
     //todo consider using a config object for parameters.
     static createHugo(ecs,
                       xPos = 0, yPos = 0,
-                      maxTopSpeed = 500,
+                      maxTopSpeed = 50,
                       spritePath = "Game/Assets/Chick.png"
     ) {
         let entity = ecs.createEntity('hugo');
@@ -63,7 +63,7 @@ export class EntityFactory {
         ecs.addComponent(entity, new RigidbodyComponent());
         ecs.addComponent(entity, new CollisionRectComponent(10,10 ));
         ecs.addComponent(entity, new CollisionSpriteComponent());
-        ecs.addComponent(entity, new PickUpComponent());
+        ecs.addComponent(entity, new PickUpComponent('speed', 100));
 
     }
 }
